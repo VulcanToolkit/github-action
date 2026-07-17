@@ -60,7 +60,13 @@ jobs:
           permission-pull-requests: 'write'
 
       - name: Checkout repository
-        uses: 'actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8' # ratchet:actions/checkout@v6
+        uses: 'actions/checkout@v7'
+
+      - name: Checkout shared-workflows repository
+        uses: 'actions/checkout@v7'
+        with:
+          repository: VulcanToolkit/shared-workflows
+          path: shared-workflows
 
       - name: Run Vulcan pull request review
         id: vulcan-pr-review
@@ -148,7 +154,7 @@ jobs:
         with:
           github-token: ${{ secrets.github-token }}
           script: |
-            const { postPullRequestReview } = require('./.github/workflows/scripts/post-vulcan-review.js');
+            const { postPullRequestReview } = require('./shared-workflows/scripts/post-vulcan-review.js');
             return await postPullRequestReview(github, context, core);
 
       - name: Get PR Commits
@@ -307,5 +313,5 @@ jobs:
         with:
           github-token: ${{ secrets.github-token }}
           script: |
-            const { postAggregateCommitReview } = require('./.github/workflows/scripts/post-vulcan-review.js');
+            const { postAggregateCommitReview } = require('./shared-workflows/scripts/post-vulcan-review.js');
             return await postAggregateCommitReview(github, context, core);
