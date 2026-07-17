@@ -298,8 +298,14 @@ jobs:
       issues: 'write'
       pull-requests: 'write'
     steps:
-      - name: 'Checkout repository'
-        uses: 'actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8' # ratchet:actions/checkout@v6
+      - name: Checkout repository
+        uses: 'actions/checkout@v7'
+
+      - name: Checkout shared-workflows repository
+        uses: 'actions/checkout@v7'
+        with:
+          repository: VulcanToolkit/shared-workflows
+          path: shared-workflows
 
       - uses: actions/download-artifact@v4
         with:
