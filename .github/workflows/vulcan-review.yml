@@ -21,7 +21,7 @@ on:
     secrets:
       GEMINI_API_KEY:
         required: true
-      GITHUB_TOKEN:
+      github-token:
         required: true
 
 concurrency:
@@ -67,7 +67,7 @@ jobs:
         uses: 'google-github-actions/run-gemini-cli@v0.1.21' # ratchet:exclude
         if: ${{ inputs.requested_pr_review == 'true' }}
         env:
-          GITHUB_TOKEN: '${{ steps.mint-identity-token.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
+          GITHUB_TOKEN: '${{ steps.mint-identity-token.outputs.token || secrets.github-token || github.token }}'
           ISSUE_TITLE: '${{ github.event.pull_request.title || github.event.issue.title }}'
           ISSUE_BODY: '${{ github.event.pull_request.body || github.event.issue.body }}'
           PULL_REQUEST_NUMBER: '${{ github.event.pull_request.number || github.event.issue.number }}'
@@ -146,7 +146,7 @@ jobs:
         env:
           GEMINI_OUTPUT: '${{ steps.vulcan-pr-review.outputs.summary }}'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.github-token }}
           script: |
             const { postPullRequestReview } = require('./.github/workflows/scripts/post-vulcan-review.js');
             return await postPullRequestReview(github, context, core);
@@ -156,7 +156,7 @@ jobs:
         if: ${{ inputs.requested_commit_review == 'true' || steps.review.outputs.should-review-commits == 'true' }}
         uses: 'actions/github-script@v7'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.github-token }}
           result-encoding: string
           script: |
             const commits = await github.rest.pulls.listCommits({
@@ -195,7 +195,7 @@ jobs:
         id: vulcan-commit-review
         uses: 'google-github-actions/run-gemini-cli@v0.1.21' # ratchet:exclude
         env:
-          GITHUB_TOKEN: '${{ needs.review.outputs.token || secrets.GITHUB_TOKEN || github.token }}'
+          GITHUB_TOKEN: '${{ needs.review.outputs.token || secrets.github-token || github.token }}'
           COMMIT_MESSAGE: '${{ fromJson(needs.review.outputs.commits)[matrix.commit].commit.message }}'
           COMMIT_SHA: '${{ matrix.commit }}'
           REPOSITORY: '${{ github.repository }}'
@@ -270,7 +270,7 @@ jobs:
           COMMIT_SHA: '${{ matrix.commit }}'
           GEMINI_OUTPUT: '${{ steps.vulcan-commit-review.outputs.summary }}'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.github-token }}
           script: |
             const fs = require('fs');
             const content = process.env.GEMINI_OUTPUT;
@@ -305,7 +305,7 @@ jobs:
         env:
           COMMITS: '${{ needs.review.outputs.commits }}'
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.github-token }}
           script: |
             const { postAggregateCommitReview } = require('./.github/workflows/scripts/post-vulcan-review.js');
             return await postAggregateCommitReview(github, context, core);
