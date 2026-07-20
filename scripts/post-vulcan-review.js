@@ -1,8 +1,11 @@
 import fs from 'fs';
 
 
+const vulcan_project_url = 'https://github.com/VulcanToolkit';
+
+
 // Template: pull request review, positive for vagueness
-const vagueReport = (response) => `# Vulcan Pull Request Review
+const vagueReport = (response) => `# [Vulcan](${vulcan_project_url}) Pull Request Review
 
 1. **Vagueness:** ${response.vagueness.concerning ? "concerning" : "OK"}
 
@@ -12,7 +15,7 @@ Code consistency could not be evaluated because the commit message was too vague
 
 
 // Template: pull request review, negative for vagueness
-const nonvagueReport = (response) => `# Vulcan Pull Request Review
+const nonvagueReport = (response) => `# [Vulcan](${vulcan_project_url}) Pull Request Review
 
 1. **Vagueness:** ${response.vagueness.concerning ? "concerning" : "OK"}
 
@@ -30,7 +33,7 @@ ${response.contradicting.concerning || response.incomplete.concerning ? "The pul
 
 
 // Template: pull request review, error parsing model output
-const parseErrorReport = (response) => `# Vulcan Pull Request Review
+const parseErrorReport = (response) => `# [Vulcan](${vulcan_project_url}) Pull Request Review
 
 ${response}
 
@@ -185,7 +188,7 @@ export async function postAggregateCommitReview(github, context, core) {
     index++;
   }
 
-  const comment = `# Vulcan Commit Review\n\n${table}\n\n${details}`;
+  const comment = `# [Vulcan](${vulcan_project_url}) Commit Review\n\n${table}\n\n${details}`;
 
   await github.rest.issues.createComment({
     owner: context.repo.owner,
